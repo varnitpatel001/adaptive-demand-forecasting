@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Adaptive Forecast Dashboard</title>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  font-family: 'Inter', sans-serif;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
+  background-size: 40px 40px;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(90deg, #22d3ee, #6366f1, #a855f7);
+  background-size: 200%;
+  animation: gradientMove 6s linear infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0%; }
+  100% { background-position: 200%; }
+}
+
+/* Animations */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.8s ease forwards;
+}
+@keyframes fadeIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Glow */
+.glow {
+  box-shadow: 0 0 25px rgba(56,189,248,0.2);
+}
+
+/* Noise */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url('https://www.transparenttextures.com/patterns/noise.png');
+  opacity: 0.04;
+  pointer-events: none;
+}
+</style>
+</head>
+
+<body class="bg-black text-white flex flex-col items-center min-h-screen">
+
+<!-- Background glow -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-cyan-500/10 blur-3xl rounded-full"></div>
+
+<!-- Title -->
+<h1 class="gradient-text text-4xl md:text-6xl font-bold mt-10 fade-in">
+⚡ Adaptive Forecast Engine
+</h1>
+
+
+<!-- Cards -->
+<div class="grid grid-cols-1 md:grid-cols-5 gap-6 w-[90%] max-w-7xl mt-10">
+
+<!-- Predicted -->
+<div class="p-[1px] rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-500 fade-in">
+<div class="bg-slate-900 rounded-2xl p-6 glow hover:scale-105 transition">
+<h3 class="text-xs uppercase tracking-widest text-slate-500">Predicted demand</h3>
+<p id="pred" class="text-4xl font-bold text-cyan-400 mt-2">--</p>
+<canvas id="sparkPred" class="mt-3"></canvas>
+</div>
+</div>
+
+<!-- Actual -->
+<div class="p-[1px] rounded-2xl bg-gradient-to-r from-green-400 to-emerald-600 fade-in">
+<div class="bg-slate-900 rounded-2xl p-6 glow hover:scale-105 transition">
+<h3 class="text-xs uppercase tracking-widest text-slate-500">Actual demand</h3>
+<p id="actual" class="text-4xl font-bold text-green-400 mt-2">--</p>
+<canvas id="sparkActual" class="mt-3"></canvas>
+</div>
+</div>
+
+<!-- Drift -->
+<div class="p-[1px] rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 fade-in">
+<div class="bg-slate-900 rounded-2xl p-6 glow hover:scale-105 transition">
+<h3 class="text-xs uppercase tracking-widest text-slate-500">Drift</h3>
+<p id="drift" class="text-4xl font-bold mt-2">--</p>
+</div>
+</div>
+
+<!-- Drift Counter -->
+<div class="p-[1px] rounded-2xl bg-gradient-to-r from-purple-500 to-indigo-500 fade-in">
+<div class="bg-slate-900 rounded-2xl p-6 glow hover:scale-105 transition">
+<h3 class="text-xs uppercase tracking-widest text-slate-500">Drift Counter</h3>
+<p id="driftCount" class="text-3xl font-bold text-purple-400 mt-2">0 / 3</p>
+</div>
+</div>
+
+<!-- Status -->
+<div class="p-[1px] rounded-2xl bg-gradient-to-r from-yellow-400 to-orange-500 fade-in">
+<div class="bg-slate-900 rounded-2xl p-6 glow hover:scale-105 transition">
+<h3 class="text-xs uppercase tracking-widest text-slate-500">Status</h3>
+<p id="status" class="text-xl mt-2 text-slate-300">Monitoring...</p>
+</div>
+</div>
+
+</div>
+
+<!-- Alert -->
+<div id="alert" class="mt-6 text-lg font-semibold text-red-400 fade-in"></div>
+
+<!-- Main Chart -->
+<div class="w-[90%] max-w-6xl mt-10 p-[1px] rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-500 fade-in">
+<div class="bg-slate-900 rounded-2xl p-5 glow">
+<canvas id="chart"></canvas>
+</div>
+</div>
+
+<!-- External Script -->
+<script src="chart.js"></script>
+
+</body>
+</html>
